@@ -32,7 +32,6 @@ let validusers = users.filter((user)=>{
 //only registered users can login
 regd_users.post("/login", (req,res) => {
   //Write your code here
-  console.log("login: ", req.body);
   const username = req.body.username;
   const password = req.body.password;
 
@@ -56,7 +55,24 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  
+  const isbn = req.params.isbn
+  const user = req.session.authorization
+  const rev = req.body.review
+  if(books[isbn]){
+    let book = books[isbn]
+    book.reviews[user] = review
+    return res.send("Succefull added");
+  }
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn
+    const user = req.session.authorization
+    if(books[isbn]){
+        let book = books[isbn]
+        delete book.reviews[user]
+        return res.send("Succefully deleted")
+    }
 });
 
 module.exports.authenticated = regd_users;
